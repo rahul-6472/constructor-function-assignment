@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <style>
+      #counter {
+        padding: 20px;
+      }
+      #container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 15px;
+        padding: 20px;
+      }
+      #container > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      #container > div > button {
+        margin-bottom: 12px;
+      }
+      #container > div > img {
+        width: 250px;
+        height: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="counter"></div>
+    <div id="container"></div>
+  </body>
+  <script>
+    let productsData = JSON.parse(localStorage.getItem("Products"));
+    console.log(productsData);
+
+    let productCount = productsData.length;
+    document.getElementById("counter").innerText =
+      "count:" + " " + productCount;
+
+    function displayData(productsData) {
+      document.getElementById("container").innerHTML = "";
+      productsData.forEach((product, index) => {
+        let productCard = document.createElement("div");
+
+        let imageUrl = document.createElement("img");
+        imageUrl.src = product.imageUrl;
+
+        let name = document.createElement("p");
+        name.innerText = product.productName;
+
+        let category = document.createElement("p");
+        category.innerText = product.category;
+
+        let price = document.createElement("p");
+        price.innerText = "Rs" + " " + product.price;
+
+        let removeBtn = document.createElement("button");
+        removeBtn.innerText = "Remove";
+
+        removeBtn.addEventListener("click", () => {
+          productsData.splice(index, 1);
+          localStorage.setItem("Products", JSON.stringify(productsData));
+          location.reload();
+        });
+
+        let soldBtn = document.createElement("button");
+        soldBtn.innerText = "sold";
+        soldBtn.addEventListener("click", () => {
+          if (product.sold == false) {
+            soldBtn.style.background = "red";
+            product.sold = true;
+            localStorage.setItem("Products", JSON.stringify(productsData));
+          } else {
+            soldBtn.style.background = "green";
+            product.sold = false;
+            localStorage.setItem("Products", JSON.stringify(productsData));
+          }
+        });
+
+        productCard.append(imageUrl, name, category, price, removeBtn, soldBtn);
+
+        document.getElementById("container").append(productCard);
+      });
+    }
+
+    displayData(productsData);
+  </script>
+</html>
